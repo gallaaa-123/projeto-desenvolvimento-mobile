@@ -1,133 +1,190 @@
-// Parâmetros visuais
-var corFundo = make_color_rgb(230, 100, 20); // Laranja
-var borda = 8;
+// Inicializações
+if (!variable_global_exists("respondido")) {
+    global.respondido = false;
+    global.opcao_selecionada = -1;
+    global.mensagem_alerta = "";
+    global.alerta_visivel = false;
+}
+if (!variable_instance_exists(self, "pergunta_atual")) {
+    pergunta_atual = 0;
+}
+
+// Perguntas
+perguntas = [
+  {
+    pergunta: "Qual o maior rio da Amazônia?",
+    opcoes: ["1) Rio Amazonas", "2) Rio Tietê", "3) Rio Paraná", "4) Rio São Francisco"],
+    resposta_correta: "1) Rio Amazonas"
+  },
+  {
+    pergunta: "Qual era o nome da província que deu origem ao estado do Pará?",
+    opcoes: ["1) Província do Antigo Pará", "2) Belém", "3) Província do Parazinho", "4) Grão-Pará"],
+    resposta_correta: "4) Grão-Pará"
+  },
+  {
+    pergunta: "Qual é o ponto mais alto do Brasil?",
+    opcoes: ["1) Pico da Neblina", "2) Pico do Jaraguá", "3) Pico das Agulhas Negras", "4) Monte Roraima"],
+    resposta_correta: "1) Pico da Neblina"
+  }
+];
+
+// GUI base
+var corFundo = make_color_rgb(230, 100, 20);
 var padding = 32;
 
-// Medidas da tela
 var gui_w = display_get_gui_width();
 var gui_h = display_get_gui_height();
 
-// Tamanhos dos painéis
 var statusLargura = gui_w * 0.69;
 var actionLargura = gui_w * 0.25;
 var painelAltura = 350;
 
-// Coordenadas do painel da esquerda (status + quiz)
 var statusX = padding;
 var statusY = gui_h - painelAltura - padding;
 
-// Coordenadas do painel da direita (ações)
 var actionX = gui_w - actionLargura - padding;
 var actionY = gui_h - painelAltura - padding;
 
-// --- Desenho dos painéis ---
+// Painéis
 draw_set_color(corFundo);
 draw_roundrect(statusX, statusY, statusX + statusLargura, statusY + painelAltura, false);
 draw_roundrect(actionX, actionY, actionX + actionLargura, actionY + painelAltura, false);
 
-// --- Texto "01 de 25" centralizado ---
+// Número da pergunta
 draw_set_color(c_white);
 draw_set_font(Font_Large);
 draw_set_halign(fa_center);
 draw_set_valign(fa_top);
 
-var numeroPergunta = "01 de 25";
-var numPergX = statusX + statusLargura / 2;
-var numPergY = statusY + 20;
-draw_text(numPergX, numPergY, numeroPergunta);
+var numero = string(pergunta_atual + 1);
+if (string_length(numero) == 1) numero = "0" + numero;
+var numeroPergunta = numero + " de " + string(array_length(perguntas));
+draw_text(statusX + statusLargura / 2, statusY + 20, numeroPergunta);
 
-// --- Texto da pergunta e alternativas à esquerda ---
-draw_set_halign(fa_left); // Alinhamento à esquerda
+// Dados da pergunta
+var pergunta_data = perguntas[pergunta_atual];
+var pergunta = pergunta_data.pergunta;
+var opcoes = pergunta_data.opcoes;
+var resposta_correta = pergunta_data.resposta_correta;
+
+draw_set_halign(fa_left);
 draw_set_valign(fa_top);
+draw_set_font(Font_Large_Zoom);
 
-var margem_interna = 24;
-var perguntaX = statusX + margem_interna;
-var perguntaY = numPergY + 40;
-
-draw_set_font(Font_Large_Zoom); // Usa uma fonte maior
-var pergunta = "O Pará anteriormente era uma província.\nQual era o seu nome?";
+var perguntaX = statusX + 24;
+var perguntaY = statusY + 60;
 draw_text(perguntaX, perguntaY, pergunta);
 
-
-// --- Respostas abaixo da pergunta ---
-var opcoes = [
-    "1 - Provincia do Antigo Pará",
-    "2 - Belém",
-    "3 - Provincia do Parazinho",
-    "4 - Grão-Pará"
-];
-
-var opcao_espacamento = 45;
-var opcao_y_inicial = perguntaY + 100;
+// Opções
+var mouseX = device_mouse_x(0);
+var mouseY = device_mouse_y(0);
+var espacamento = 45;
+var inicioY = perguntaY + 100;
 
 for (var i = 0; i < array_length(opcoes); i++) {
-    var texto_y = opcao_y_inicial + i * opcao_espacamento;
+    var texto = opcoes[i];
     var texto_x = perguntaX;
-
-    var mouseX = device_mouse_x(0);
-    var mouseY = device_mouse_y(0);
+    var texto_y = inicioY + i * espacamento;
 
     draw_set_font(Font_Large);
-    var largura_texto = string_width(opcoes[i]);
-    var altura_texto = string_height(opcoes[i]);
+    var largura = string_width(texto);
+    var altura = string_height(texto);
 
-    var hoverX1 = texto_x;
-    var hoverX2 = texto_x + largura_texto;
-    var hoverY1 = texto_y;
-    var hoverY2 = texto_y + altura_texto;
+    var hover = mouseX > texto_x && mouseX < texto_x + largura && mouseY > texto_y && mouseY < texto_y + altura;
 
-    var mouse_hover = (mouseX > hoverX1 && mouseX < hoverX2 && mouseY > hoverY1 && mouseY < hoverY2);
+    // Verifica clique
+    if (!global.respondido && hover && mouse_check_button_pressed(mb_left)) {
+        global.opcao_selecionada = i;
+        global.respondido = true;
+        global.alerta_visivel = true;
 
-    if (mouse_hover) {
-        draw_set_color(c_black);
-        draw_set_font(Font_Large_Zoom);
-    } else {
-        draw_set_color(c_white);
-        draw_set_font(Font_Large);
+        if (texto == resposta_correta) {
+            global.mensagem_alerta = "Resposta correta!";
+        } else {
+            global.mensagem_alerta = "Resposta errada!";
+        }
     }
 
-    draw_text(texto_x, texto_y, opcoes[i]);
+    // Cores
+    if (global.respondido) {
+        if (texto == resposta_correta) {
+            draw_set_color(c_lime);
+        } else if (i == global.opcao_selecionada) {
+            draw_set_color(c_red);
+        } else {
+            draw_set_color(c_white);
+        }
+    } else {
+        draw_set_color(hover ? c_black : c_white);
+        draw_set_font(hover ? Font_Large_Zoom : Font_Large);
+    }
+
+    draw_text(texto_x, texto_y, texto);
 }
 
-// --- Textos no painel da direita com animação ---
-var textos_opcoes = ["Cartas", "Placas", "Convidados", "Pular 3x"];
-var quantidade = array_length(textos_opcoes);
-
+// Botões laterais
+var botoes = ["Cartas", "Placas", "Convidados", "Pular 3x"];
 draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
 
-var texto_espacamento = 60;
-var altura_total = (quantidade - 1) * texto_espacamento;
-var texto_y_inicial = actionY + (painelAltura / 2) - (altura_total / 2);
+var esp = 60;
+var y_total = (array_length(botoes) - 1) * esp;
+var y_inicial = actionY + painelAltura / 2 - y_total / 2;
 
-for (var i = 0; i < quantidade; i++) {
-    var texto_y = texto_y_inicial + i * texto_espacamento;
-    var texto_x = actionX + actionLargura / 2;
+for (var i = 0; i < array_length(botoes); i++) {
+    var tx = actionX + actionLargura / 2;
+    var ty = y_inicial + i * esp;
 
-    var mouseX = device_mouse_x(0);
-    var mouseY = device_mouse_y(0);
+    var largura = string_width(botoes[i]);
+    var altura = string_height(botoes[i]);
 
-    // Usa a fonte normal para calcular largura e altura
+    var hover = mouseX > tx - largura / 2 && mouseX < tx + largura / 2 && mouseY > ty - altura / 2 && mouseY < ty + altura / 2;
+
+    draw_set_color(hover ? c_black : c_white);
+    draw_set_font(hover ? Font_Large_Zoom : Font_Large);
+    draw_text(tx, ty, botoes[i]);
+}
+
+// ALERTA de resposta
+if (global.alerta_visivel) {
+    var alerta_w = 400;
+    var alerta_h = 200;
+    var alerta_x = gui_w / 2 - alerta_w / 2;
+    var alerta_y = gui_h / 2 - alerta_h / 2;
+
+    draw_set_color(c_black);
+    draw_roundrect(alerta_x, alerta_y, alerta_x + alerta_w, alerta_y + alerta_h, false);
+
+    draw_set_color(c_white);
+    draw_set_font(Font_Large_Zoom);
+    draw_set_halign(fa_center);
+    draw_text(alerta_x + alerta_w / 2, alerta_y + 40, global.mensagem_alerta);
+
+    var btn_w = 180;
+    var btn_h = 60;
+    var btn_x = alerta_x + alerta_w / 2 - btn_w / 2;
+    var btn_y = alerta_y + alerta_h - btn_h - 20;
+
+    var btn_hover = mouseX > btn_x && mouseX < btn_x + btn_w && mouseY > btn_y && mouseY < btn_y + btn_h;
+
+    draw_set_color(btn_hover ? c_lime : c_white);
+    draw_roundrect(btn_x, btn_y, btn_x + btn_w, btn_y + btn_h, false);
+
+    draw_set_color(c_black);
     draw_set_font(Font_Large);
-    var largura_texto = string_width(textos_opcoes[i]);
-    var altura_texto = string_height(textos_opcoes[i]);
+    draw_set_valign(fa_middle);
+    draw_text(btn_x + btn_w / 2, btn_y + btn_h / 2, "Próxima");
 
-    // Área de hover
-    var hoverX1 = texto_x - largura_texto / 2;
-    var hoverX2 = texto_x + largura_texto / 2;
-    var hoverY1 = texto_y - altura_texto / 2;
-    var hoverY2 = texto_y + altura_texto / 2;
+    // Verifica clique no botão
+    if (btn_hover && mouse_check_button_pressed(mb_left)) {
+        global.respondido = false;
+        global.opcao_selecionada = -1;
+        global.mensagem_alerta = "";
+        global.alerta_visivel = false;
 
-    var mouse_hover = (mouseX > hoverX1 && mouseX < hoverX2 && mouseY > hoverY1 && mouseY < hoverY2);
-
-    // Efeito ao passar o mouse
-    if (mouse_hover) {
-        draw_set_color(c_black);
-        draw_set_font(Font_Large_Zoom); // Fonte maior no hover
-    } else {
-        draw_set_color(c_white);
-        draw_set_font(Font_Large);
+        pergunta_atual++;
+        if (pergunta_atual >= array_length(perguntas)) {
+            pergunta_atual = 0;
+        }
     }
-
-    draw_text(texto_x, texto_y, textos_opcoes[i]);
 }
