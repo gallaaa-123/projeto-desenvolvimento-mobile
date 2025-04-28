@@ -206,48 +206,22 @@ for (var i = 0; i < array_length(botoes); i++) {
 // Desenha o container de Cartas
 if (global.cartas_visivel) {
     var cartasX = statusX;
-    var cartasY = statusY - 120; // Acima dos outros containers
-    var cartasLargura = 1300;
-    var cartasAltura = 100;
+    var cartasY = -32; // Acima dos outros containers
+    var cartasLargura = 88;
+    var cartasAltura = 256;
 
+    // Fundo do container
     draw_set_color(corFundo);
     draw_roundrect(cartasX, cartasY, cartasX + cartasLargura, cartasY + cartasAltura, false);
-	
-	// Desenha as imagens das cartas abaixo dos quadrados
+    
+    // Desenha a carta (sprite chamado 'carta1')
     var cartaLargura = 60;
-    var espacamentoCartas = espacamentoQuadrados; // Usando o mesmo espaçamento para consistência
-    var cartaY = quadradoY + quadradoLargura + 10; // Abaixo dos quadrados
+    var cartaX = cartasX + (cartasLargura - cartaLargura) / 2; // Centraliza horizontalmente
+    var cartaY = cartasY + (cartasAltura - cartaLargura) / 2;  // Centraliza verticalmente
 
-    for (var i = 0; i < array_length(cartas); i++) {
-        var cartaX = cartasX + espacamentoQuadrados + (i * (cartaLargura + espacamentoCartas));
-        draw_sprite(cartas[i], 0, cartaX + cartaLargura / 2, cartaY + cartaLargura / 2); // Desenha centralizado
-    }
-
-    // Desenha os 4 quadrados arredondados dentro do container de Cartas
-    var quadradoLargura = 60;
-    var espacamentoQuadrados = (cartasLargura - (quadradoLargura * 4)) / 5; // Espaço entre os quadrados
-    var quadradoY = cartasY + (cartasAltura - quadradoLargura) / 2; // Centraliza verticalmente
-
-    for (var i = 0; i < 4; i++) {
-        var quadradoX = cartasX + espacamentoQuadrados + (i * (quadradoLargura + espacamentoQuadrados));
-        draw_set_color(c_black);
-        draw_roundrect(quadradoX, quadradoY, quadradoX + quadradoLargura, quadradoY + quadradoLargura, false); // Alterado para 'false' para preencher
-    }
-	
-	// Detecta clique no quadrado
-    if (global.cartas_visivel && !global.respondido && mouseX > quadradoX && mouseX < quadradoX + quadradoLargura && mouseY > quadradoY && mouseY < quadradoY + quadradoLargura && mouse_check_button_pressed(mb_left)) {
-        if (quadrado_selecionado == -1) { // Permite selecionar apenas um quadrado por vez
-            quadrado_selecionado = i;
-            carta_selecionada = cartas[i];
-            global.cartas_visivel = false; // Oculta as cartas após a seleção
-        }
-    }
-
-    // Desenha algum indicador visual para o quadrado selecionado (opcional)
-    if (quadrado_selecionado == i) {
-        draw_set_color(c_yellow); // Exemplo: borda amarela
-        draw_rectangle(quadradoX, quadradoY, quadradoX + quadradoLargura, quadradoY + quadradoLargura, true);
-    }
+    draw_sprite(carta1, 0, cartaX + cartaLargura / 2, cartaY + cartaLargura / 2);
+	draw_sprite(carta2, 0, cartaX + 180 + cartaLargura / 2, cartaY + cartaLargura / 2);
+	draw_sprite(carta3, 0, cartaX + 360 + cartaLargura / 2, cartaY + cartaLargura / 2);
 }
 
 // ALERTA de resposta

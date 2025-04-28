@@ -20,9 +20,9 @@ if (!variable_instance_exists(self, "pergunta_atual")) {
 }
 
 // Carregar as imagens das cartas
-carta1_img = asset
-carta2_img = asset_get_index(1);
-carta3_img = asset_get_index(2);
+carta1_img = object_get_sprite(0);
+carta2_img = object_get_sprite(1);
+carta3_img = object_get_sprite(2);
 
 // Criar o array de cartas e embaralhar
 cartas = [carta1_img, carta1_img, carta2_img, carta3_img];
