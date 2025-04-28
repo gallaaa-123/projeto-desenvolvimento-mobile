@@ -1,0 +1,8 @@
+{
+  "FolderOrderSettings":[],
+  "ResourceOrderSettings":[
+    {"name":"carta1","order":1,"path":"sprites/carta1/carta1.yy",},
+    {"name":"carta2","order":2,"path":"sprites/carta2/carta2.yy",},
+    {"name":"carta3","order":3,"path":"sprites/carta3/carta3.yy",},
+  ],
+}
