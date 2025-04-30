@@ -50,6 +50,8 @@
     {"id":{"name":"carta2","path":"sprites/carta2/carta2.yy",},},
     {"id":{"name":"carta3","path":"sprites/carta3/carta3.yy",},},
     {"id":{"name":"spr_background_menu","path":"sprites/spr_background_menu/spr_background_menu.yy",},},
+    {"id":{"name":"Sprite5","path":"sprites/Sprite5/Sprite5.yy",},},
+    {"id":{"name":"Sprite6","path":"sprites/Sprite6/Sprite6.yy",},},
   ],
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
