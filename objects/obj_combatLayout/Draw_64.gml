@@ -30,7 +30,7 @@ charadas = [
 ];
 
 // GUI base
-var corFundo = make_color_rgb(230, 100, 20);
+var corFundo = #E80808;
 var padding = 32;
 var gui_w = display_get_gui_width();
 var gui_h = display_get_gui_height();
