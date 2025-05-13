@@ -1,10 +1,17 @@
 {
   "FolderOrderSettings":[],
   "ResourceOrderSettings":[
+    {"name":"Font_Large_Zoom","order":2,"path":"fonts/Font_Large_Zoom/Font_Large_Zoom.yy",},
+    {"name":"Font_Large","order":1,"path":"fonts/Font_Large/Font_Large.yy",},
+    {"name":"Font1","order":4,"path":"fonts/Font1/Font1.yy",},
     {"name":"carta1","order":1,"path":"sprites/carta1/carta1.yy",},
     {"name":"carta2","order":2,"path":"sprites/carta2/carta2.yy",},
     {"name":"carta3","order":3,"path":"sprites/carta3/carta3.yy",},
+    {"name":"Sprite10","order":8,"path":"sprites/Sprite10/Sprite10.yy",},
     {"name":"Sprite5","order":1,"path":"sprites/Sprite5/Sprite5.yy",},
     {"name":"Sprite6","order":4,"path":"sprites/Sprite6/Sprite6.yy",},
+    {"name":"Sprite7","order":6,"path":"sprites/Sprite7/Sprite7.yy",},
+    {"name":"Sprite8","order":5,"path":"sprites/Sprite8/Sprite8.yy",},
+    {"name":"Sprite9","order":7,"path":"sprites/Sprite9/Sprite9.yy",},
   ],
 }

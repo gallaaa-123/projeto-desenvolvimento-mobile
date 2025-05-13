@@ -67,7 +67,9 @@ draw_set_valign(fa_top);
 draw_set_font(Font_Large_Zoom);
 var perguntaX = statusX + 24;
 var perguntaY = statusY + 60;
-draw_text(perguntaX, perguntaY, pergunta);
+var largura_texto = statusLargura - 48; // ou ajuste conforme necessário
+draw_text_ext(perguntaX, perguntaY, pergunta, -1, largura_texto);
+
 
 // Opções
 var mouseX = device_mouse_x(0);
@@ -305,22 +307,31 @@ if (global.convidados_visivel) {
     var convidadosY = 20;
     var convidadosLargura = 1300;
     var convidadosAltura = 350;
+    
+    // Fundo do painel
     draw_set_color(corFundo);
     draw_roundrect(convidadosX, convidadosY, convidadosX + convidadosLargura, convidadosY + convidadosAltura, false);
 
-    var charada_padding = 20;
+    // Margens internas
+    var charada_padding = 32;
     var charada_x = convidadosX + charada_padding;
     var charada_y = convidadosY + charada_padding;
     var charada_largura = convidadosLargura - 2 * charada_padding;
     var charada_altura = convidadosAltura - 2 * charada_padding;
 
-    draw_set_color(c_black);
-    draw_set_font(Font_Medium);
+    // Configurações do texto
+    draw_set_color(c_orange);
+    draw_set_font(Font_Large);
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 
-    draw_text_ext(charada_x, charada_y, charadas[pergunta_atual], charada_largura, charada_altura);
+    var texto = charadas[pergunta_atual];
+    var largura_texto_charada = charada_largura;
+    var altura_linha = 32; // Ajusta o espaçamento entre linhas (menor que o padrão)
+
+    draw_text_ext(charada_x, charada_y, texto, altura_linha, largura_texto_charada);
 }
+
 
 // ALERTA de resposta
 if (global.alerta_visivel) {
@@ -361,6 +372,7 @@ if (global.alerta_visivel) {
         global.ajuda_convidados_usada = false;
         global.pode_abrir_charada = true;
         global.ajuda_cartas_usada = false;
+		global.convidados_visivel = false;
         global.teste_sorte_usado = false; // Reseta o uso do "Teste sua sorte"
         global.carta_usada = 0;
         global.carta_sorte_selecionada = -1; // Reseta a carta de sorte selecionada
